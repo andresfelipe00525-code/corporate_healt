@@ -10,7 +10,8 @@ import {
 	GraduationCap,
 } from 'lucide-react';
 
-const API = null;
+// Intenta leer la variable de entorno, si no existe, usa localhost por defecto o null
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const iconMap = {
 	'clipboard-check': ClipboardCheck,
@@ -30,56 +31,78 @@ const serviceImages = [
 	'https://images.pexels.com/photos/4421494/pexels-photo-4421494.jpeg?w=400&h=300&fit=crop',
 ];
 
-function App() {
-	const [services, setServices] = useState([]);
+// Datos de respaldo por si falla el backend
+const FALLBACK_SERVICES = [
+	{
+		id: '1',
+		title: 'Medical Evaluations',
+		description:
+			'Occupational medical examinations to monitor the health of your workers.',
+		icon: 'clipboard-check',
+	},
+	{
+		id: '2',
+		title: 'Occupational Exams',
+		description:
+			'Specialized tests to detect workplace risks and occupational diseases.',
+		icon: 'stethoscope',
+	},
+	{
+		id: '3',
+		title: 'Work Certificates',
+		description:
+			'Issuance of work aptitude certificates to comply with regulations.',
+		icon: 'file-check',
+	},
+	{
+		id: '4',
+		title: 'Online Platform',
+		description: 'Consult and download certificates from our web portal.',
+		icon: 'monitor',
+	},
+	{
+		id: '5',
+		title: 'Health Programs',
+		description:
+			'Comprehensive health and wellness programs for your workforce.',
+		icon: 'heart-pulse',
+	},
+	{
+		id: '6',
+		title: 'Safety Training',
+		description:
+			'Training and education on workplace safety and health protocols.',
+		icon: 'graduation-cap',
+	},
+];
 
-	const safeServices = Array.isArray(services) ? services : [];
+function App() {
+	// Inicializamos con los datos de respaldo para que la página nunca se vea vacía
+	const [services, setServices] = useState(FALLBACK_SERVICES);
 
 	useEffect(() => {
-		setServices([
-			{
-				id: '1',
-				title: 'Medical Evaluations',
-				description:
-					'Occupational medical examinations to monitor the health of your workers.',
-				icon: 'clipboard-check',
-			},
-			{
-				id: '2',
-				title: 'Occupational Exams',
-				description:
-					'Specialized tests to detect workplace risks and occupational diseases.',
-				icon: 'stethoscope',
-			},
-			{
-				id: '3',
-				title: 'Work Certificates',
-				description:
-					'Issuance of work aptitude certificates to comply with regulations.',
-				icon: 'file-check',
-			},
-			{
-				id: '4',
-				title: 'Online Platform',
-				description: 'Consult and download certificates from our web portal.',
-				icon: 'monitor',
-			},
-			{
-				id: '5',
-				title: 'Health Programs',
-				description:
-					'Comprehensive health and wellness programs for your workforce.',
-				icon: 'heart-pulse',
-			},
-			{
-				id: '6',
-				title: 'Safety Training',
-				description:
-					'Training and education on workplace safety and health protocols.',
-				icon: 'graduation-cap',
-			},
-		]);
+		const fetchServices = async () => {
+			try {
+				// Si tienes el backend listo, descomenta la siguiente línea:
+				// const response = await axios.get(`${API_URL}/services`);
+				// setServices(response.data);
+
+				// Por ahora, simulamos que cargó correctamente usando los datos locales
+				console.log('Cargando servicios locales...');
+			} catch (error) {
+				console.error(
+					'Error connecting to backend, using fallback data:',
+					error,
+				);
+				// Si falla, mantenemos los servicios de respaldo
+				setServices(FALLBACK_SERVICES);
+			}
+		};
+
+		fetchServices();
 	}, []);
+
+	const safeServices = Array.isArray(services) ? services : [];
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
