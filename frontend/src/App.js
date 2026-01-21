@@ -51,7 +51,7 @@ function App() {
 	const [submitStatus, setSubmitStatus] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	// 🔒 Siempre array seguro
+	// siempre array seguro
 	const safeServices = Array.isArray(services) ? services : [];
 
 	useEffect(() => {
