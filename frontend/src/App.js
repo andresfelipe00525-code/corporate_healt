@@ -51,6 +51,9 @@ function App() {
 	const [submitStatus, setSubmitStatus] = useState(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
+	// 🔒 Siempre array seguro
+	const safeServices = Array.isArray(services) ? services : [];
+
 	useEffect(() => {
 		const fetchServices = async () => {
 			try {
@@ -59,7 +62,14 @@ function App() {
 				const response = await axios.get(`${API}/services`);
 				const data = response.data;
 
-				setServices(Array.isArray(data) ? data : data.services || []);
+				if (Array.isArray(data)) {
+					setServices(data);
+				} else if (Array.isArray(data?.services)) {
+					setServices(data.services);
+				} else {
+					console.error('Invalid services format:', data);
+					setServices([]);
+				}
 			} catch (e) {
 				console.error('Error fetching services:', e);
 				setServices([
@@ -142,8 +152,6 @@ function App() {
 
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-			{/* HEADER OMITIDO POR BREVEDAD (no cambia) */}
-
 			{/* SERVICES SECTION */}
 			<section id="services" className="py-20 bg-white">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -154,45 +162,42 @@ function App() {
 					</div>
 
 					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-						{Array.isArray(services) &&
-							services.map((service, index) => {
-								const IconComponent = iconMap[service.icon] || ClipboardCheck;
+						{safeServices.map((service, index) => {
+							const IconComponent = iconMap[service.icon] || ClipboardCheck;
 
-								return (
-									<div
-										key={service.id}
-										className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition group border border-gray-100"
-									>
-										<div className="h-48 overflow-hidden">
-											<img
-												src={serviceImages[index % serviceImages.length]}
-												alt={service.title}
-												className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-											/>
-										</div>
-
-										<div className="p-6">
-											<div className="flex items-center gap-3 mb-3">
-												<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-													<IconComponent className="w-5 h-5 text-blue-600" />
-												</div>
-												<h4 className="text-lg font-bold text-blue-900">
-													{service.title}
-												</h4>
-											</div>
-
-											<p className="text-gray-600 text-sm leading-relaxed">
-												{service.description}
-											</p>
-										</div>
+							return (
+								<div
+									key={service.id}
+									className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition group border border-gray-100"
+								>
+									<div className="h-48 overflow-hidden">
+										<img
+											src={serviceImages[index % serviceImages.length]}
+											alt={service.title}
+											className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+										/>
 									</div>
-								);
-							})}
+
+									<div className="p-6">
+										<div className="flex items-center gap-3 mb-3">
+											<div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+												<IconComponent className="w-5 h-5 text-blue-600" />
+											</div>
+											<h4 className="text-lg font-bold text-blue-900">
+												{service.title}
+											</h4>
+										</div>
+
+										<p className="text-gray-600 text-sm leading-relaxed">
+											{service.description}
+										</p>
+									</div>
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			</section>
-
-			{/* FOOTER OMITIDO POR BREVEDAD (no cambia) */}
 		</div>
 	);
 }
