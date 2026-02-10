@@ -9,7 +9,6 @@ import {
 	GraduationCap,
 } from 'lucide-react';
 
-// ELIMINAMOS TODA LA LOGICA DE AXIOS Y API PARA QUE NO FALLE
 const iconMap = {
 	'clipboard-check': ClipboardCheck,
 	stethoscope: Stethoscope,
@@ -121,8 +120,6 @@ function App() {
 					</div>
 				</div>
 			</section>
-
-			{/* Si la marca de agua estaba en el pie de pagina, aqui la puedes ver y borrar */}
 		</div>
 	);
 }
